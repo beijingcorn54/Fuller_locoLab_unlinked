@@ -12,7 +12,7 @@ inclines = ["i10", 10; "i5", 5; "i0", 0; "in5", -5; "in10", -10];
 speed_filter = false;
 by_incline = false;
 automatic_buckets = true;
-num_buckets = 4;
+num_buckets = 5;
 export_to_pdf = false;
 pdf_file_name = "Torque and Angle Plots, All Speeds.pdf";
 
