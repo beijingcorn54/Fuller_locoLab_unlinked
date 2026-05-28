@@ -1,13 +1,13 @@
-function [bucket_set] = automatic_buckets(data, priority_row, bucket_number, get_average_std)
-bucket_set{3, bucket_number} = [];
+function [bucket_set] = automatic_buckets(data, priority_row, num_buckets, get_average_std)
+bucket_set{3, num_buckets} = [];
 
     % Order the dataset by the appropriate measurement
     [~, idx] = sort(data(priority_row, :));
     ordered_data = data(:, idx);
 
     % Put into buckets
-    bucket_size_low = floor(size(data, 2) / bucket_number);
-    for i_buckets = 1 : bucket_number
+    bucket_size_low = floor(size(data, 2) / num_buckets);
+    for i_buckets = 1 : num_buckets
         
         % Chose start and end indecies of buckets
         if i_buckets == 1
@@ -16,7 +16,7 @@ bucket_set{3, bucket_number} = [];
             i_start = 1 + i_end;
         end
 
-        if i_buckets == bucket_number
+        if i_buckets == num_buckets
             i_end = size(data, 2);
 
         else
