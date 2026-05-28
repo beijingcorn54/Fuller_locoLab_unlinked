@@ -1,13 +1,20 @@
 clear;
 close all;
 
-% Variables
+% Static Variables
 force_threshold = 25;
 subjects = ["AB01", "AB02", "AB03", "AB04", "AB05", "AB06", "AB07", "AB08", "AB09", "AB10"];
 legLengths = [0.951, 0.921, 0.99, 0.96, 0.766, 0.918, 0.859, 0.991, 0.940, 0.815];
 speeds = ["s0x8", -0.8; "s1", -1; "s1x2", -1.2];
 inclines = ["i10", 10; "i5", 5; "i0", 0; "in5", -5; "in10", -10];
-speed_filter = 0.8;
+
+% Control (Dynamic) Variables
+speed_filter = false;
+by_incline = false;
+automatic_buckets = true;
+num_buckets = 4;
+export_to_pdf = false;
+pdf_file_name = "Torque and Angle Plots, All Speeds.pdf";
 
 % Load in Data
 directory = "/Users/kefuller/Fuller_Locolab/";
@@ -35,94 +42,169 @@ addpath(directory + 'computation_functions/');
 [i10_A_t, i10_K_t, i10_A_a, i10_K_a] = get_formatted_ankle_knee_data(dataBase, directory, subjects, speeds, legLengths, incline_vector, force_threshold);
 
 %% Plot based off metric and joint
-% Ankle Torque
-if true
-    plot_sorted_data(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
-end
 
-% Knee Torque
-if true
-    plot_sorted_data(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
-end
+if automatic_buckets
+% Plot based off metric and joint
+    % Ankle Torque
+    if ~by_incline
+        plot_sorted_data_automatic_buckets(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units", num_buckets);
+    end
+    
+    % Knee Torque
+    if ~by_incline
+        plot_sorted_data_automatic_buckets(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units", num_buckets);
+    end
+    
+    % Ankle Angle
+    if ~by_incline
+        plot_sorted_data_automatic_buckets(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Unkown Units", num_buckets);
+    end
+    
+    % Knee Angle
+    if ~by_incline
+        plot_sorted_data_automatic_buckets(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees", num_buckets);
+    end
+    
+% Plot based off incline
+    % Incline -10
+    if by_incline
+        plot_sorted_data_automatic_buckets(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees", num_buckets);
+    end
+    
+    % Incline -5
+    if by_incline
+        plot_sorted_data_automatic_buckets(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees", num_buckets);
+    end
+    
+    % Incline 0
+    if by_incline
+        plot_sorted_data_automatic_buckets(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees", num_buckets);
+    end
+    
+    % Incline 5
+    if by_incline
+        plot_sorted_data_automatic_buckets(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees", num_buckets);
+    end
+    
+    % Incline 10
+    if by_incline
+        plot_sorted_data_automatic_buckets(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Degrees", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units", num_buckets);
+        plot_sorted_data_automatic_buckets(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees", num_buckets);
+    end
 
-% Ankle Angle
-if true
-    plot_sorted_data(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Unkown Units");
-    plot_sorted_data(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Unkown Units");
-    plot_sorted_data(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Unkown Units");
-    plot_sorted_data(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Unkown Units");
-    plot_sorted_data(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Unkown Units");
-end
-
-% Knee Angle
-if true
-    plot_sorted_data(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
-    plot_sorted_data(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
-    plot_sorted_data(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
-    plot_sorted_data(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
-    plot_sorted_data(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
-end
-
-%% Plot based off incline
-% Incline -10
-if false
-    plot_sorted_data(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Degrees");
-    plot_sorted_data(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
-end
-
-% Incline -5
-if false
-    plot_sorted_data(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Degrees");
-    plot_sorted_data(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
-end
-
-% Incline 0
-if false
-    plot_sorted_data(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Degrees");
-    plot_sorted_data(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
-end
-
-% Incline 5
-if false
-    plot_sorted_data(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Degrees");
-    plot_sorted_data(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
-end
-
-% Incline 10
-if false
-    plot_sorted_data(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
-    plot_sorted_data(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Degrees");
-    plot_sorted_data(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
-    plot_sorted_data(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
+else
+% Plot based off metric and joint
+    % Ankle Torque
+    if ~by_incline
+        plot_sorted_data(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
+    end
+    
+    % Knee Torque
+    if ~by_incline
+        plot_sorted_data(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
+    end
+    
+    % Ankle Angle
+    if ~by_incline
+        plot_sorted_data(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Unkown Units");
+        plot_sorted_data(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Unkown Units");
+        plot_sorted_data(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Unkown Units");
+        plot_sorted_data(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Unkown Units");
+        plot_sorted_data(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Unkown Units");
+    end
+    
+    % Knee Angle
+    if ~by_incline
+        plot_sorted_data(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
+        plot_sorted_data(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
+        plot_sorted_data(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
+        plot_sorted_data(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
+        plot_sorted_data(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
+    end
+    
+% Plot based off incline
+    % Incline -10
+    if by_incline
+        plot_sorted_data(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Degrees");
+        plot_sorted_data(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
+    end
+    
+    % Incline -5
+    if by_incline
+        plot_sorted_data(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Degrees");
+        plot_sorted_data(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
+    end
+    
+    % Incline 0
+    if by_incline
+        plot_sorted_data(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Degrees");
+        plot_sorted_data(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
+    end
+    
+    % Incline 5
+    if by_incline
+        plot_sorted_data(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Degrees");
+        plot_sorted_data(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
+    end
+    
+    % Incline 10
+    if by_incline
+        plot_sorted_data(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
+        plot_sorted_data(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Degrees");
+        plot_sorted_data(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
+        plot_sorted_data(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
+    end
 end
 
 %% Export to a PDF
-if true
+if export_to_pdf
     figs = findall(groot, 'Type', 'figure');
-
-    if ~speed_filter
-        speed_label = "All Speeds";
-    else
-        speed_label = "Speed " + speed_filter;
-    end
-
-    pdf_file_name = "Torque and Angle Plots, " + speed_label + ", 3 Buckets.pdf";
 
     if isfile(pdf_file_name)
         delete(pdf_file_name)
@@ -138,6 +220,176 @@ if true
 end
 
 %% Helper Functions
+function plot_sorted_data_automatic_buckets(joint_data, speed_filter, directory, incline, joint_type, metric, units, num_buckets)
+% 1. Sorts data into vectors by cadence and normalized stride length
+    % uses sort_a_vector function
+    % eliminates zero/invalid entries
+
+% 2. Produces a 2-column matrix with:
+%   mean vector (column 1)
+%   standard deviation vector (column 2)
+
+% Sorting Codes:
+    % 1: Sort by Cadence
+    % 2: Sort by Normalized Stride Length
+    % 3: Sort by Calculated Speeds
+    % 4: Sort by Recorded Speeds
+
+% Filtering process
+if speed_filter
+    if speed_filter == 0.8
+        filtered_joint_data = sort_a_vector(joint_data, 0.9, 0.7, 4);
+    elseif speed_filter == 1
+        filtered_joint_data = sort_a_vector(joint_data, 1.1, 0.9, 4);
+    elseif speed_filter == 1.2
+        filtered_joint_data = sort_a_vector(joint_data, 1.3, 1.1, 4);
+    end
+else
+    filtered_joint_data = joint_data;
+end
+
+% Cadence: 35 - 70
+addpath(directory + 'computation_functions/');
+cadence = automatic_buckets(filtered_joint_data, 1, num_buckets, true);
+
+% Normalized Stride Length: 0.7 - 2
+addpath(directory + 'computation_functions/');
+norm_SL = automatic_buckets(filtered_joint_data, 2, num_buckets, true);
+
+% Calculated Speeds: 0.66 - 1.35
+addpath(directory + 'computation_functions/');
+calculated_speed = automatic_buckets(filtered_joint_data, 3, num_buckets, true);
+
+% Recorded Speeds: 0.8, 1, 1.2
+sorting_code = 4;
+recorded_speed{2, 3} = 0;
+addpath(directory + 'computation_functions/');
+recorded_speed(1, :) = {get_mean_std_vector(sort_a_vector(filtered_joint_data, 0.9, 0.7, sorting_code)), ...
+                        get_mean_std_vector(sort_a_vector(filtered_joint_data, 1.1, 0.9, sorting_code)), ...
+                        get_mean_std_vector(sort_a_vector(filtered_joint_data, 1.3, 1.1, sorting_code))};
+recorded_speed(2, :) = {"0.8", "1", "1.2"};
+
+
+% 3. Plot the vectors
+    colors = ['r' 'g' 'w' 'c' 'm' 'y' 'b'];
+    figure;
+
+    if speed_filter
+        tiledlayout(1, 3);
+    else
+        tiledlayout(2, 2);
+    end
+    
+    % --- Plot 1: Cadence ---
+    nexttile;
+    hold on;
+    legend_entries = {};
+
+    for i_col = 1 : num_buckets
+        if ~isempty(cadence{1, i_col}) % && (cadence{3, i_col} > 50)
+            vector_size = size(cadence{1, i_col}, 1);
+            x = linspace(0, 100, vector_size);
+            y = cadence{1, i_col}(:, 1)';
+            error = cadence{1, i_col}(:, 2)';
+
+            addpath(directory + 'plotting&testing_functions/');
+            plotShaded(x, [y + error; y; y - error], colors(i_col), '-', 1);
+            legend_entries{end + 1} = cadence{2, i_col}(1) + " - " + cadence{2, i_col}(2) + ", " + cadence{3, i_col} + " T";
+        end
+    end
+    
+    title(joint_type + " " + metric + " vs Cadence (steps per minute)");
+    xlabel('Gait Percentage');
+    ylabel(metric + " (" + units + ")");
+    legend(legend_entries,'location','best');
+    grid on;
+    hold off;
+    
+    % --- Plot 2: Normalized Stride Length ---
+    nexttile;
+    hold on;
+    legend_entries = {};
+
+    for i_col = 1 : num_buckets
+        if ~isempty(norm_SL{1, i_col}) % && (norm_SL{3, i_col} > 50)
+            vector_size = size(norm_SL{1, i_col}, 1);
+            x = linspace(0, 100, vector_size);
+            y = norm_SL{1, i_col}(:, 1)';
+            error = norm_SL{1, i_col}(:, 2)';
+
+            addpath(directory + 'plotting&testing_functions/');
+            plotShaded(x, [y + error; y; y - error], colors(i_col), '-', 1);
+            legend_entries{end + 1} = norm_SL{2, i_col}(1) + " - " + norm_SL{2, i_col}(2) + ", " + norm_SL{3, i_col} + " T";
+        end
+    end
+
+    title(joint_type + " " + metric + " vs Normalized Stride Length");
+    xlabel('Gait Percentage');
+    ylabel(metric + " (" + units + ")");
+    legend(legend_entries, 'location','best');
+    grid on;
+    hold off;
+    
+    % --- Plot 3: Calculated Speed ---
+    nexttile;
+    hold on;
+    legend_entries = {};
+
+    for i_col = 1 : num_buckets
+        if ~isempty(calculated_speed{1, i_col}) % && (calculated_speed{3, i_col} > 50)
+            vector_size = size(calculated_speed{1, i_col}, 1);
+            x = linspace(0, 100, vector_size);
+            y = calculated_speed{1, i_col}(:, 1)';
+            error = calculated_speed{1, i_col}(:, 2)';
+
+            addpath(directory + 'plotting&testing_functions/');
+            plotShaded(x, [y + error; y; y - error], colors(i_col), '-', 1);
+            legend_entries{end + 1} = calculated_speed{2, i_col}(1) + " - " + calculated_speed{2, i_col}(2) + ", " + calculated_speed{3, i_col} + " T";
+        end
+    end
+    
+    title(joint_type + " " + metric + " vs Calculated Speed (m/s)");
+    xlabel('Gait Percentage');
+    ylabel(metric + " (" + units + ")");
+    legend(legend_entries, 'location','best');
+    grid on;
+    hold off;
+
+    % --- Plot 4: Recorded Speed ---
+    if ~speed_filter
+        nexttile;
+        hold on;
+        legend_entries = {};
+    
+        for i_bucket = 1 : 3
+            if ~isempty(recorded_speed{1, i_bucket})
+                vector_size = size(recorded_speed{1, i_bucket}, 1) - 2;
+                x = linspace(0, 100, vector_size);
+                y = recorded_speed{1, i_bucket}(3 : end, 1)';
+                error = recorded_speed{1, i_bucket}(3 : end, 2)';
+    
+                addpath(directory + 'plotting&testing_functions/');
+                plotShaded(x, [y + error; y; y - error], colors(i_bucket), '-', 1);
+                legend_entries{end + 1} = recorded_speed{2, i_bucket} + ", " + recorded_speed{1, i_bucket}(3, 3) + " T";
+            end
+        end
+        
+        title(joint_type + " " + metric + " vs Recorded Speed (m/s)");
+        xlabel('Gait Percentage');
+        ylabel(metric + " (" + units + ")");
+        legend(legend_entries,'location','best');
+        grid on;
+        hold off;
+    end
+    
+    % --- Title ---
+    if speed_filter
+        sgtitle(joint_type + " " + metric + ", Speed " + speed_filter + " m/s, Incline " + incline, 'FontSize', 16, 'FontWeight', 'bold');
+    else
+        sgtitle(joint_type + " " + metric + ", All Speeds, Incline " + incline, 'FontSize', 16, 'FontWeight', 'bold');
+    end
+end
+
 function plot_sorted_data(joint_data, speed_filter, directory, incline, joint_type, metric, units)
 % 1. Sorts data into vectors by cadence and normalized stride length
     % uses sort_a_vector function
