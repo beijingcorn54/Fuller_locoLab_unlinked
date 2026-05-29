@@ -1,15 +1,17 @@
 % Stacks the data and gets interpolated data
-% Recieves data that excludes the ingrained measurements
+% Input data includes the ingrained measurements
+% Output data includes the ingrained measurements
 
 function [interpolated_data] = get_interpolated_data(data)
+    data_no_ingrained = data(5 : end, :); % Hardcoded based on number of ingrained measurements
     % Stack the data
-    stacked_data{1, size(data, 2)} = [];
+    stacked_data{1, size(data_no_ingrained, 2)} = [];
     
-     for i_col = 1 : size(data, 2)
+     for i_col = 1 : size(data_no_ingrained, 2)
          stacked_column = [];
     
-          for i_row = 1 : size(data, 1)
-              this_datum = data(i_row, i_col);
+          for i_row = 1 : size(data_no_ingrained, 1)
+              this_datum = data_no_ingrained(i_row, i_col);
     
               if ~isnan(this_datum)
                   stacked_column = [stacked_column; this_datum];
@@ -41,7 +43,7 @@ function [interpolated_data] = get_interpolated_data(data)
             interpolate_x = linspace(1, this_length, max_data_length);
             interpolate_y = interp1(x, y, interpolate_x)';
     
-            interpolated_data = [interpolated_data, interpolate_y];
+            interpolated_data = [interpolated_data, [data(1 : 4, i_col); interpolate_y]]; % Hardcoded based on number of ingrained measurements
         end
     end
 end
