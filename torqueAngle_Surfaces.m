@@ -1,13 +1,18 @@
 clear;
 close all;
 
-% Variables
+% Static Variables
 force_threshold = 25;
 subjects = ["AB01", "AB02", "AB03", "AB04", "AB05", "AB06", "AB07", "AB08", "AB09", "AB10"];
 legLengths = [0.951, 0.921, 0.99, 0.96, 0.766, 0.918, 0.859, 0.991, 0.940, 0.815];
 speeds = ["s0x8", -0.8; "s1", -1; "s1x2", -1.2];
 inclines = ["i10", 10; "i5", 5; "i0", 0; "in5", -5; "in10", -10];
+
+% Control (Dynamic) Variables
 speed_filter = false;
+by_incline = false;
+export_to_pdf = true;
+pdf_file_name = "Torque and Angle Surfaces, All Speeds.pdf";
 
 % Load in Data
 directory = "/Users/kefuller/Fuller_Locolab/";
@@ -34,47 +39,86 @@ incline_vector = inclines(1, :);
 addpath(directory + 'computation_functions/');
 [i10_A_t, i10_K_t, i10_A_a, i10_K_a] = get_formatted_ankle_knee_data(dataBase, directory, subjects, speeds, legLengths, incline_vector, force_threshold);
 
-
-%% Heat map
-heat_map = true;
+% Plot based off metric and joint
 % Ankle Torque
-if heat_map
-    make_heatMap(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
-    make_heatMap(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
-    make_heatMap(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
-    make_heatMap(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
-    make_heatMap(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
+if ~by_incline
+    make_surface(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
+    make_surface(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
+    make_surface(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
+    make_surface(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
+    make_surface(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
 end
 
 % Knee Torque
-if heat_map
-    make_heatMap(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
-    make_heatMap(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
-    make_heatMap(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
-    make_heatMap(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
-    make_heatMap(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
+if ~by_incline
+    make_surface(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
+    make_surface(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
+    make_surface(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
+    make_surface(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
+    make_surface(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
 end
 
 % Ankle Angle
-if heat_map
-    make_heatMap(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Unkown Units");
-    make_heatMap(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Unkown Units");
-    make_heatMap(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Unkown Units");
-    make_heatMap(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Unkown Units");
-    make_heatMap(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Unkown Units");
+if ~by_incline
+    make_surface(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Unkown Units");
+    make_surface(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Unkown Units");
+    make_surface(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Unkown Units");
+    make_surface(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Unkown Units");
+    make_surface(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Unkown Units");
 end
 
 % Knee Angle
-if heat_map
-    make_heatMap(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
-    make_heatMap(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
-    make_heatMap(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
-    make_heatMap(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
-    make_heatMap(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
+if ~by_incline
+    make_surface(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
+    make_surface(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
+    make_surface(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
+    make_surface(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
+    make_surface(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
+end
+
+% Plot based off incline
+% Incline -10
+if by_incline
+    make_surface(in10_A_t, speed_filter, directory, -10, "Ankle", "Torque", "Unkown Units");
+    make_surface(in10_A_a, speed_filter, directory, -10, "Ankle", "Angle", "Degrees");
+    make_surface(in10_K_t, speed_filter, directory, -10, "Knee", "Torque", "Unkown Units");
+    make_surface(in10_K_a, speed_filter, directory, -10, "Knee", "Angle", "Degrees");
+end
+
+% Incline -5
+if by_incline
+    make_surface(in5_A_t, speed_filter, directory, -5, "Ankle", "Torque", "Unkown Units");
+    make_surface(in5_A_a, speed_filter, directory, -5, "Ankle", "Angle", "Degrees");
+    make_surface(in5_K_t, speed_filter, directory, -5, "Knee", "Torque", "Unkown Units");
+    make_surface(in5_K_a, speed_filter, directory, -5, "Knee", "Angle", "Degrees");
+end
+
+% Incline 0
+if by_incline
+    make_surface(i0_A_t, speed_filter, directory, 0, "Ankle", "Torque", "Unkown Units");
+    make_surface(i0_A_a, speed_filter, directory, 0, "Ankle", "Angle", "Degrees");
+    make_surface(i0_K_t, speed_filter, directory, 0, "Knee", "Torque", "Unkown Units");
+    make_surface(i0_K_a, speed_filter, directory, 0, "Knee", "Angle", "Degrees");
+end
+
+% Incline 5
+if by_incline
+    make_surface(i5_A_t, speed_filter, directory, 5, "Ankle", "Torque", "Unkown Units");
+    make_surface(i5_A_a, speed_filter, directory, 5, "Ankle", "Angle", "Degrees");
+    make_surface(i5_K_t, speed_filter, directory, 5, "Knee", "Torque", "Unkown Units");
+    make_surface(i5_K_a, speed_filter, directory, 5, "Knee", "Angle", "Degrees");
+end
+
+% Incline 10
+if by_incline
+    make_surface(i10_A_t, speed_filter, directory, 10, "Ankle", "Torque", "Unkown Units");
+    make_surface(i10_A_a, speed_filter, directory, 10, "Ankle", "Angle", "Degrees");
+    make_surface(i10_K_t, speed_filter, directory, 10, "Knee", "Torque", "Unkown Units");
+    make_surface(i10_K_a, speed_filter, directory, 10, "Knee", "Angle", "Degrees");
 end
 
 %% Helper Functions
-function make_heatMap(joint_data, speed_filter, directory, incline, joint_type, metric, units)
+function make_surface(joint_data, speed_filter, directory, incline, joint_type, metric, units)
 % 1. Sorts data into vectors by cadence and normalized stride length
     % uses sort_a_vector function
     % eliminates zero/invalid entries
