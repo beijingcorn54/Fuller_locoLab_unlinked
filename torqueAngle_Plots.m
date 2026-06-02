@@ -12,7 +12,7 @@ inclines = ["i10", 10; "i5", 5; "i0", 0; "in5", -5; "in10", -10];
 speed_filter = false;
 by_incline = false;
 automatic_buckets = true;
-num_buckets = 5;
+num_buckets = 4;
 export_to_pdf = false;
 pdf_file_name = "Torque and Angle Plots, All Speeds.pdf";
 
@@ -40,8 +40,6 @@ addpath(directory + 'computation_functions/');
 incline_vector = inclines(1, :);
 addpath(directory + 'computation_functions/');
 [i10_A_t, i10_K_t, i10_A_a, i10_K_a] = get_formatted_ankle_knee_data(dataBase, directory, subjects, speeds, legLengths, incline_vector, force_threshold);
-
-%% Plot based off metric and joint
 
 if automatic_buckets
 % Plot based off metric and joint
@@ -273,12 +271,7 @@ recorded_speed(2, :) = {"0.8", "1", "1.2"};
 % 3. Plot the vectors
     colors = ['r' 'g' 'w' 'c' 'm' 'y' 'b'];
     figure;
-
-    if speed_filter
-        tiledlayout(1, 3);
-    else
-        tiledlayout(2, 2);
-    end
+    tiledlayout(1, 3);
     
     % --- Plot 1: Cadence ---
     nexttile;
@@ -331,29 +324,31 @@ recorded_speed(2, :) = {"0.8", "1", "1.2"};
     hold off;
     
     % --- Plot 3: Calculated Speed ---
-    nexttile;
-    hold on;
-    legend_entries = {};
-
-    for i_col = 1 : num_buckets
-        if ~isempty(calculated_speed{1, i_col}) % && (calculated_speed{3, i_col} > 50)
-            vector_size = size(calculated_speed{1, i_col}, 1);
-            x = linspace(0, 100, vector_size);
-            y = calculated_speed{1, i_col}(:, 1)';
-            error = calculated_speed{1, i_col}(:, 2)';
-
-            addpath(directory + 'plotting&testing_functions/');
-            plotShaded(x, [y + error; y; y - error], colors(i_col), '-', 1);
-            legend_entries{end + 1} = calculated_speed{2, i_col}(1) + " - " + calculated_speed{2, i_col}(2) + ", " + calculated_speed{3, i_col} + " T";
-        end
-    end
+    if speed_filter
+        nexttile;
+        hold on;
+        legend_entries = {};
     
-    title(joint_type + " " + metric + " vs Calculated Speed (m/s)");
-    xlabel('Gait Percentage');
-    ylabel(metric + " (" + units + ")");
-    legend(legend_entries, 'location','best');
-    grid on;
-    hold off;
+        for i_col = 1 : num_buckets
+            if ~isempty(calculated_speed{1, i_col}) % && (calculated_speed{3, i_col} > 50)
+                vector_size = size(calculated_speed{1, i_col}, 1);
+                x = linspace(0, 100, vector_size);
+                y = calculated_speed{1, i_col}(:, 1)';
+                error = calculated_speed{1, i_col}(:, 2)';
+    
+                addpath(directory + 'plotting&testing_functions/');
+                plotShaded(x, [y + error; y; y - error], colors(i_col), '-', 1);
+                legend_entries{end + 1} = calculated_speed{2, i_col}(1) + " - " + calculated_speed{2, i_col}(2) + ", " + calculated_speed{3, i_col} + " T";
+            end
+        end
+        
+        title(joint_type + " " + metric + " vs Calculated Speed (m/s)");
+        xlabel('Gait Percentage');
+        ylabel(metric + " (" + units + ")");
+        legend(legend_entries, 'location','best');
+        grid on;
+        hold off;
+    end
 
     % --- Plot 4: Recorded Speed ---
     if ~speed_filter
