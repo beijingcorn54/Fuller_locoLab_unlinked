@@ -7,7 +7,7 @@ function [mean_std_vector] = get_mean_std_vector(data)
     if ~isempty(data)     
         % Interpolate Data
         interpolated_data = get_interpolated_data(data);
-        interpolated_data = interpolated_data(5 : end, :); % Hardcoded based on the number of ingrained measurements
+        interpolated_data = interpolated_data(6 : end, :); % Hardcoded based on the number of ingrained measurements
     
         % Find mean, standard deviation, and number of trials/steps represented in the matrix    
         for i_row = 1 : size(interpolated_data, 1)        
