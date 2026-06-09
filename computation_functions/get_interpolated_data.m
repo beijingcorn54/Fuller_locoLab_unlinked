@@ -3,7 +3,8 @@
 % Output data includes the ingrained measurements
 
 function [interpolated_data] = get_interpolated_data(data)
-    data_no_ingrained = data(5 : end, :); % Hardcoded based on number of ingrained measurements
+    data_no_ingrained = data(6 : end, :); % Hardcoded based on number of ingrained measurements
+    
     % Stack the data
     stacked_data{1, size(data_no_ingrained, 2)} = [];
     
@@ -43,7 +44,7 @@ function [interpolated_data] = get_interpolated_data(data)
             interpolate_x = linspace(1, this_length, max_data_length);
             interpolate_y = interp1(x, y, interpolate_x)';
     
-            interpolated_data = [interpolated_data, [data(1 : 4, i_col); interpolate_y]]; % Hardcoded based on number of ingrained measurements
+            interpolated_data = [interpolated_data, [data(1 : 5, i_col); interpolate_y]]; % Hardcoded based on number of ingrained measurements
         end
     end
 end
