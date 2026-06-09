@@ -6,6 +6,7 @@
         % 2. Normalized stride length
         % 3. Calculated Speed
         % 4. Recorded Speed
+        % 5. Subject
 
 function [ankle_torque_processed, knee_torque_processed, ankle_angle_processed, knee_angle_processed] = get_formatted_ankle_knee_data(dataBase, directory, subjects, speeds, legLengths, incline_vector, force_threshold)
 ankle_torque_processed = [];
@@ -62,14 +63,24 @@ knee_angle_processed = [];
             [stride_lengths, norm_stride_lengths] = find_strideLengths(data, v_treadmill, incline_val, legLengths(i_subject));
             cadences = find_cadence(data);
 
-            % 2b. Include Speed, Cadence and Normalized stride length data
+            % 2b. Include Ingrained Data:
+            %   1. Cadence
+            %   2. Normalized Stride length
+            %   3. Calculated Speed
+            %   4. Recorded Speed
+            %   5. Participant number
             calculated_speeds = stride_lengths .* cadences ./ 60;
             treadmill_speed = -v_treadmill * ones(1, size(calculated_speeds, 2));
+            participant_vector = i_subject * ones(1, size(calculated_speeds, 2));
             
-            ankle_torque_processed = [ankle_torque_processed, [cadences; norm_stride_lengths; calculated_speeds; treadmill_speed; ankle_torque]];
-            knee_torque_processed = [knee_torque_processed, [cadences; norm_stride_lengths; calculated_speeds; treadmill_speed; knee_torque]];
-            ankle_angle_processed = [ankle_angle_processed, [cadences; norm_stride_lengths; calculated_speeds; treadmill_speed; ankle_angle]];
-            knee_angle_processed = [knee_angle_processed, [cadences; norm_stride_lengths; calculated_speeds; treadmill_speed; knee_angle]];
+            ankle_torque_processed = [ankle_torque_processed, [cadences; norm_stride_lengths; calculated_speeds; ...
+                treadmill_speed; participant_vector; ankle_torque]];
+            knee_torque_processed = [knee_torque_processed, [cadences; norm_stride_lengths; calculated_speeds; ...
+                treadmill_speed; participant_vector; knee_torque]];
+            ankle_angle_processed = [ankle_angle_processed, [cadences; norm_stride_lengths; calculated_speeds; ...
+                treadmill_speed; participant_vector; ankle_angle]];
+            knee_angle_processed = [knee_angle_processed, [cadences; norm_stride_lengths; calculated_speeds; ...
+                treadmill_speed; participant_vector; knee_angle]];
         end
     end
 end
