@@ -3,6 +3,7 @@
 % 2. Normalized stride length
 % 3. Calculated Speed
 % 4. Recorded Speed
+% 5. Subject
 
 % Keeps those measurements ingrained in the data
 
