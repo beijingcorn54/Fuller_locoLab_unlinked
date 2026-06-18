@@ -1,4 +1,4 @@
-clear;
+clearvars -except directory dataBase;
 close all;
 
 % Load in Data
